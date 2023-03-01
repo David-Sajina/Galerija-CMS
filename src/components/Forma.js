@@ -250,9 +250,13 @@ const Forma = ({ data, callback, refresh }) => {
 	}, [data]);
 	const deletePicture = async () => {
 		try {
-			const rez = await axios.post("http://localhost:2000/delete", {
-				ID: data.ID,
-			});
+			const rez = await axios.post(
+				"https://intersoft.uno/crm/M1WebServiceCRM.svc/v1/GalleryDelete",
+				{
+				  ID: data.ID,
+				}
+				
+			  );
 			console.log("rez", rez.data);
 
 			handleCloseAdd();
@@ -285,15 +289,36 @@ const Forma = ({ data, callback, refresh }) => {
 		};
 		handleRefresh(updatedData);
 		try {
-			const rez = await axios.post("http://localhost:2000/apdejtaj", {
-				ImageTitle: picName,
-				ImageAuthor: author,
-				ImageDescription: desc,
-				ImageNum: picNum,
-				ImageBase64: x,
-				BeaconID: beacon,
-				ID: data.ID,
-			});
+
+	let xif;
+
+    if (x == "") {
+		xif = {
+        ImageTitle: picName,
+        ImageAuthor: author,
+        ImageDescription: desc,
+        ImageNum: picNum,
+        BeaconID: beacon,
+        ID: data.ID,
+      };
+    } else {
+		xif = {
+        ImageTitle: picName,
+        ImageAuthor: author,
+        ImageDescription: desc,
+        ImageNum: picNum,
+        ImageBase64: x,
+        BeaconID: beacon,
+        ID: data.ID,
+      };
+    }
+
+    const rez = await axios.post(
+      "https://intersoft.uno/crm/M1WebServiceCRM.svc/v1/GalleryUpdate",
+      xif
+    );
+
+			
 			console.log("rez", rez.data);
 			handleCloseAdd();
 		} catch (error) {

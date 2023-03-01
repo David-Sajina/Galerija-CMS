@@ -100,14 +100,18 @@ function App() {
 		let unsortedData = [];
 		console.log("xxx", base64data);
 		try {
-			const res = await axios.post("http://localhost:2000/postaj", {
-				ImageTitle: picName,
-				ImageAuthor: author,
-				ImageDescription: desc,
-				ImageNum: picNum,
-				ImageBase64: base64data,
-				BeaconID: beacon,
-			});
+			const res = await axios.post(
+				"https://intersoft.uno/crm/M1WebServiceCRM.svc/v1/GalleryInsert",
+				{
+					ImageTitle: picName,
+					ImageAuthor: author,
+					ImageDescription: desc,
+					ImageNum: picNum,
+					ImageBase64: base64data,
+					BeaconID: beacon,
+				}
+			  );
+		
 			console.log(res.data);
 			if (res.data.ResponseCode === "0") {
 				let newPodaci = {
