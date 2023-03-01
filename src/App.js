@@ -30,12 +30,23 @@ function App() {
 	const [pic, setPic] = useState("");
 	const [openAdd, setOpenAdd] = React.useState(false);
 	const handleOpenAdd = () => setOpenAdd(true);
-	const handleCloseAdd = () => setOpenAdd(false);
+	const handleCloseAdd = () => {
+		setOpenAdd(false);
+		clearVariables();
+	};
 	const inputFile = useRef(null);
 	const closeModal = useRef(null);
+	const clearVariables = () => {
+		setPicName("");
+		setDesc("");
+		setPicNum(null);
+		setAuthor("");
+		setBeacon("");
+		setIsFilePicked(false);
+		localStorage.clear();
+		setPic("");
+	};
 	const refreshStuff = (e) => {
-		console.log("app", e);
-		console.log("app", Object.keys(e).length);
 		if (Object.keys(e).length > 1) localUpdate(e);
 		else localDelete(e);
 	};
@@ -49,7 +60,6 @@ function App() {
 	};
 	const localDelete = async (e) => {
 		let newArr = podaci.filter((obj) => obj.ID !== e.ID);
-		console.log("newarray", newArr);
 		sortData(newArr);
 	};
 	const localUpdate = async (e) => {
@@ -78,7 +88,6 @@ function App() {
 			return 0;
 		});
 		setPodaci(sortedPodaci);
-		console.log("sorted", sortedPodaci);
 	};
 
 	const getData = async () => {
@@ -133,11 +142,8 @@ function App() {
 			console.log(error);
 		}
 	}
-
 	async function resizeImageFn(event) {
 		const imageFile = event.dataTransfer.files[0];
-		console.log("originalFile instanceof Blob", imageFile instanceof Blob); // true
-		console.log(`originalFile size ${imageFile.size / 1024 / 1024} MB`);
 
 		const options = {
 			maxSizeMB: 0.35,
@@ -146,21 +152,12 @@ function App() {
 		};
 		try {
 			const compressedFile = await imageCompression(imageFile, options);
-			console.log(
-				"compressedFile instanceof Blob",
-				compressedFile instanceof Blob
-			); // true
-			console.log(
-				`compressedFile size ${compressedFile.size / 1024 / 1024} MB`
-			); // smaller than maxSizeMB
-			console.log(compressedFile);
 			setSelectedFile(compressedFile);
 			setIsFilePicked(true);
 			const file = compressedFile;
 			getBase64(file).then((base64) => {
 				localStorage["fileBase64"] = base64;
 				setPic(base64);
-				console.log(base64);
 			});
 			changePreview(file); // write your own logic
 		} catch (error) {
@@ -169,8 +166,6 @@ function App() {
 	}
 	async function resizeImageFnT(event) {
 		const imageFile = event.target.files[0];
-		console.log("originalFile instanceof Blob", imageFile instanceof Blob); // true
-		console.log(`originalFile size ${imageFile.size / 1024 / 1024} MB`);
 
 		const options = {
 			maxSizeMB: 0.35,
@@ -179,21 +174,13 @@ function App() {
 		};
 		try {
 			const compressedFile = await imageCompression(imageFile, options);
-			console.log(
-				"compressedFile instanceof Blob",
-				compressedFile instanceof Blob
-			); // true
-			console.log(
-				`compressedFile size ${compressedFile.size / 1024 / 1024} MB`
-			); // smaller than maxSizeMB
-			console.log(compressedFile);
+
 			setSelectedFile(compressedFile);
 			setIsFilePicked(true);
 			const file = compressedFile;
 			getBase64(file).then((base64) => {
 				localStorage["fileBase64"] = base64;
 				setPic(base64);
-				console.log(base64);
 			});
 			changePreview(file); // write your own logic
 		} catch (error) {
@@ -204,21 +191,7 @@ function App() {
 		// 👇️ prevent page refresh
 		event.preventDefault();
 		sendGallery();
-		console.log("form submitted ✅");
-		console.log("picName", picName);
-		console.log("desc", desc);
-		console.log("picnum", picNum);
-		console.log("author", author);
-		console.log("beacon", beacon);
-		console.log("base64", pic.substring(0, 20));
-		setPicName("");
-		setDesc("");
-		setPicNum(null);
-		setAuthor("");
-		setBeacon("");
-		setIsFilePicked(false);
-		localStorage.clear();
-		setPic("");
+		clearVariables();
 		handleCloseAdd();
 	};
 	const notify = () => {
@@ -247,7 +220,6 @@ function App() {
 	};
 	const getBase64 = (file) => {
 		return new Promise((resolve, reject) => {
-			console.log("getbase64");
 			const reader = new FileReader();
 			reader.onload = () => resolve(reader.result);
 			reader.onerror = (error) => reject(error);
@@ -258,7 +230,6 @@ function App() {
 	const changePreview = (s) => {
 		const objectUrl = URL.createObjectURL(s);
 		setPreview(objectUrl);
-		console.log(preview);
 	};
 
 	const dragOver = (e) => {
@@ -272,13 +243,11 @@ function App() {
 		e.preventDefault();
 	};
 	const checkSize = (e) => {
-		console.log(e.target.files[0].size);
 		// 5MB
 		if (e.target.files[0].size > 5242880) return false;
 		else return true;
 	};
 	const checkSizeD = (e) => {
-		console.log(e.dataTransfer.files[0].size);
 		// 5MB
 		if (e.dataTransfer.files[0].size > 5242880) return false;
 		else return true;
@@ -287,7 +256,6 @@ function App() {
 		if (checkSize(e)) {
 			resizeImageFnT(e);
 		} else {
-			console.log("toast");
 			toast.error("Image size is too big", {
 				position: "top-center",
 				autoClose: 5000,
@@ -304,7 +272,6 @@ function App() {
 		e.preventDefault();
 		if (checkSizeD(e)) resizeImageFn(e);
 		else {
-			console.log("toast");
 			toast.error("Image size is too big", {
 				position: "top-center",
 				autoClose: 5000,
@@ -317,9 +284,9 @@ function App() {
 			});
 		}
 	};
-
 	useEffect(() => {
 		getData();
+		// eslint-disable-next-line
 	}, []);
 
 	return (
@@ -603,7 +570,6 @@ function App() {
 												className="removebtn"
 												ref={closeModal}
 												onClick={() => {
-													console.log("modal closed ");
 													close();
 												}}
 											>

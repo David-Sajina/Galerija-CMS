@@ -7,7 +7,6 @@ const CardFlip = ({ podaci, callback }) => {
 	const [isFlipped] = useState(true);
 	const [hcomponent, setHcomponent] = useState(false);
 	const val = (e) => {
-		console.log("cardflip", e);
 		callback(e);
 	};
 	const revalue = (e) => {
