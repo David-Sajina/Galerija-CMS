@@ -8,7 +8,7 @@ function DragnDrop() {
 
 	const handleFiles = function (files) {
 		alert("Number of files: " + files.length);
-	};
+	}; 
 	// handle drag events
 	const handleDrag = function (e) {
 		e.preventDefault();

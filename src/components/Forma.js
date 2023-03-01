@@ -10,7 +10,6 @@ import "../App.css";
 import axios from "axios";
 const Forma = ({ data, callback, refresh }) => {
 	const handleRefresh = (updatedData) => {
-		console.log(updatedData);
 		refresh(updatedData);
 	};
 	const handleCloseAdd = () => {
@@ -45,8 +44,6 @@ const Forma = ({ data, callback, refresh }) => {
 
 	async function resizeImageFn(event) {
 		const imageFile = event.dataTransfer.files[0];
-		console.log("originalFile instanceof Blob", imageFile instanceof Blob); // true
-		console.log(`originalFile size ${imageFile.size / 1024 / 1024} MB`);
 
 		const options = {
 			maxSizeMB: 0.35,
@@ -55,14 +52,6 @@ const Forma = ({ data, callback, refresh }) => {
 		};
 		try {
 			const compressedFile = await imageCompression(imageFile, options);
-			console.log(
-				"compressedFile instanceof Blob",
-				compressedFile instanceof Blob
-			); // true
-			console.log(
-				`compressedFile size ${compressedFile.size / 1024 / 1024} MB`
-			); // smaller than maxSizeMB
-			console.log(compressedFile);
 			setIsFilePicked(true);
 			const file = compressedFile;
 			getBase64(file).then((base64) => {
@@ -77,8 +66,6 @@ const Forma = ({ data, callback, refresh }) => {
 	}
 	async function resizeImageFnT(event) {
 		const imageFile = event.target.files[0];
-		console.log("originalFile instanceof Blob", imageFile instanceof Blob); // true
-		console.log(`originalFile size ${imageFile.size / 1024 / 1024} MB`);
 
 		const options = {
 			maxSizeMB: 0.35,
@@ -87,14 +74,6 @@ const Forma = ({ data, callback, refresh }) => {
 		};
 		try {
 			const compressedFile = await imageCompression(imageFile, options);
-			console.log(
-				"compressedFile instanceof Blob",
-				compressedFile instanceof Blob
-			); // true
-			console.log(
-				`compressedFile size ${compressedFile.size / 1024 / 1024} MB`
-			); // smaller than maxSizeMB
-			console.log(compressedFile);
 			setIsFilePicked(true);
 			const file = compressedFile;
 			getBase64(file).then((base64) => {
@@ -115,22 +94,9 @@ const Forma = ({ data, callback, refresh }) => {
 		// Runs if new picture is inserted!
 		if (pic !== pic1 && pic !== "") {
 			// Send everything with pic being base64 pic
-			console.log("form submitted with new picture ✅");
-			console.log("picName", picName);
-			console.log("desc", desc);
-			console.log("picnum", picNum);
-			console.log("author", author);
-			console.log("beacon", beacon);
-			console.log("base64", pic.substring(0, 10));
 			apdejtaj();
 		} else {
 			// Send everything with pic being pic = "null"
-			console.log("form submitted without new picture ✅");
-			console.log("picName", picName);
-			console.log("desc", desc);
-			console.log("picnum", picNum);
-			console.log("author", author);
-			console.log("beacon", beacon);
 			setPic("");
 			apdejtaj();
 		}
@@ -161,7 +127,6 @@ const Forma = ({ data, callback, refresh }) => {
 	};
 	const getBase64 = (file) => {
 		return new Promise((resolve, reject) => {
-			console.log("getbase64");
 			const reader = new FileReader();
 			reader.onload = () => resolve(reader.result);
 			reader.onerror = (error) => reject(error);
@@ -172,7 +137,6 @@ const Forma = ({ data, callback, refresh }) => {
 	const changePreview = (s) => {
 		const objectUrl = URL.createObjectURL(s);
 		setPreview(objectUrl);
-		console.log("preview", objectUrl);
 	};
 
 	const dragOver = (e) => {
@@ -186,13 +150,11 @@ const Forma = ({ data, callback, refresh }) => {
 		e.preventDefault();
 	};
 	const checkSize = (e) => {
-		console.log(e.target.files[0].size);
 		// 5MB
 		if (e.target.files[0].size > 5242880) return false;
 		else return true;
 	};
 	const checkSizeD = (e) => {
-		console.log(e.dataTransfer.files[0].size);
 		// Max picture size 5MB
 		if (e.dataTransfer.files[0].size > 5242880) return false;
 		else return true;
@@ -201,7 +163,6 @@ const Forma = ({ data, callback, refresh }) => {
 		if (checkSize(e)) {
 			resizeImageFnT(e);
 		} else {
-			console.log("toast");
 			toast.error("Image size is too big", {
 				position: "top-center",
 				autoClose: 5000,
@@ -218,7 +179,6 @@ const Forma = ({ data, callback, refresh }) => {
 		e.preventDefault();
 		if (checkSizeD(e)) resizeImageFn(e);
 		else {
-			console.log("toast");
 			toast.error("Image size is too big", {
 				position: "top-center",
 				autoClose: 5000,
@@ -232,7 +192,6 @@ const Forma = ({ data, callback, refresh }) => {
 		}
 	};
 	useEffect(() => {
-		console.log(data);
 		setPreview(data.ImgPath);
 		setPicName(data.ImageTitle);
 		setDesc(data.ImageDescription);
@@ -248,6 +207,7 @@ const Forma = ({ data, callback, refresh }) => {
 		setBeacon1(data.BeaconID);
 		setPic1(data.ImgPath);
 	}, [data]);
+
 	const deletePicture = async () => {
 		try {
 			const rez = await axios.post(
@@ -265,6 +225,7 @@ const Forma = ({ data, callback, refresh }) => {
 			console.log(error);
 		}
 	};
+
 	const apdejtaj = async () => {
 		let x = "";
 		let x1 = "";
@@ -326,7 +287,7 @@ const Forma = ({ data, callback, refresh }) => {
 		}
 	};
 
-	return (
+return (
 		<div>
 			<Modal
 				open={openAdd}
