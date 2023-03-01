@@ -107,7 +107,6 @@ function App() {
 		let commaIndex = base64String.indexOf(",");
 		let base64data = base64String.substring(commaIndex + 1);
 		let unsortedData = [];
-		console.log("xxx", base64data);
 		try {
 			const res = await axios.post(
 				"https://intersoft.uno/crm/M1WebServiceCRM.svc/v1/GalleryInsert",
@@ -121,7 +120,6 @@ function App() {
 				}
 			  );
 		
-			console.log(res.data);
 			if (res.data.ResponseCode === "0") {
 				let newPodaci = {
 					ImgPath: pic,
@@ -134,15 +132,12 @@ function App() {
 				};
 				unsortedData = podaci.concat(newPodaci);
 				sortData(unsortedData);
-				console.log(podaci);
-
 				notify();
 			} else notifyError();
 		} catch (error) {
 			console.log(error);
 		}
-	}
-	async function resizeImageFn(event) {
+	}async function resizeImageFn(event) {
 		const imageFile = event.dataTransfer.files[0];
 
 		const options = {

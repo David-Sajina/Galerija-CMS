@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import * as React from "react";
 import CardFlip from "./CardFlip";
 import Box from "@mui/material/Box";
@@ -8,21 +8,33 @@ import { Create } from "@mui/icons-material";
 import Forma from "./Forma";
 
 const OneRow = ({ podaci, prop }) => {
+	const myButtonRef = useRef(null);
 	const [slika, setSlika] = useState([]);
 	const [data1, setData1] = useState([]);
+	const [rowData, setData] = useState([]);
 	const [open, setOpen] = useState(false);
 	const handleOpen = () => setOpen(true);
 	const handleClose = () => setOpen(false);
 	const [hcomponent, setHcomponent] = useState(false);
-	const reval = () => console.log("");
-	const revalue = (e) => {
+	const reval = () => {
 		setHcomponent(false);
-		prop(e);
-		handleClose();
 	};
+	const revalue = async (e) => {
+		setHcomponent(false);
+		await prop(e);
+		handleClose();
+		refreshData();
+	};
+	const refreshData = () => {
+		const refButton = myButtonRef.current;
+		refButton.click();
+	};
+	useEffect(() => {
+		setData(podaci);
+	}, [podaci]);
 	return (
 		<div>
-			{podaci.map((data) => (
+			{rowData.map((data) => (
 				<div className="gridInlineFather" key={data.ID}>
 					<div className="gridInlineChild1">
 						<Box display="flex" flexDirection="column" alignItems="center">
@@ -53,7 +65,6 @@ const OneRow = ({ podaci, prop }) => {
 										onClick={() => {
 											setHcomponent(true);
 											setData1(data);
-											console.log(data);
 										}}
 									>
 										<Create fontSize="xs" />
@@ -65,6 +76,14 @@ const OneRow = ({ podaci, prop }) => {
 								<div className="naslovBijeli2"> Author: </div>
 								<div className="contain2">
 									<p> {data.ImageAuthor}</p>
+									<button
+										id="refButton"
+										ref={myButtonRef}
+										hidden
+										onClick={() => {
+											setData1(data);
+										}}
+									></button>
 								</div>
 							</div>
 						</div>
@@ -77,6 +96,7 @@ const OneRow = ({ podaci, prop }) => {
 					</div>
 				</div>
 			))}
+
 			<Modal
 				open={open}
 				onClose={handleClose}

@@ -210,14 +210,13 @@ const Forma = ({ data, callback, refresh }) => {
 
 	const deletePicture = async () => {
 		try {
-			const rez = await axios.post(
+			await axios.post(
 				"https://intersoft.uno/crm/M1WebServiceCRM.svc/v1/GalleryDelete",
 				{
 				  ID: data.ID,
 				}
 				
 			  );
-			console.log("rez", rez.data);
 
 			handleCloseAdd();
 			handleRefresh({ ID: data.ID });
@@ -274,20 +273,19 @@ const Forma = ({ data, callback, refresh }) => {
       };
     }
 
-    const rez = await axios.post(
+    await axios.post(
       "https://intersoft.uno/crm/M1WebServiceCRM.svc/v1/GalleryUpdate",
       xif
     );
 
 			
-			console.log("rez", rez.data);
 			handleCloseAdd();
 		} catch (error) {
 			console.log(error);
 		}
 	};
 
-return (
+	return (
 		<div>
 			<Modal
 				open={openAdd}
