@@ -74,14 +74,7 @@ const OneRow = ({ podaci, prop, loadin }) => {
 								<div className="naslovBijeli2"> Author: </div>
 								<div className="contain2">
 									<p> {data.ImageAuthor}</p>
-									<button
-										id="refButton"
-										ref={myButtonRef}
-										hidden
-										onClick={() => {
-											setData1(data);
-										}}
-									></button>
+							
 								</div>
 							</div>
 						</div>
