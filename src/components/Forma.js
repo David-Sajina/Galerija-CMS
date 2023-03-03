@@ -8,9 +8,13 @@ import { useState, useEffect, useRef } from "react";
 import Box from "@mui/material/Box";
 import "../App.css";
 import axios from "axios";
-const Forma = ({ data, callback, refresh }) => {
+const Forma = ({ data, callback, refresh, loadin }) => {
+	const openLoading = () => {
+		loadin(true)
+	}
 	const handleRefresh = (updatedData) => {
 		refresh(updatedData);
+		setLoading(false)
 	};
 	const handleCloseAdd = () => {
 		sendBackData();
@@ -27,12 +31,12 @@ const Forma = ({ data, callback, refresh }) => {
 	const [author, setAuthor] = useState("");
 	const [beacon, setBeacon] = useState("");
 	const [pic, setPic] = useState("");
-
+	const [loadingState, setLoading] = useState(false);
 	const [picName1, setPicName1] = useState("");
 	const [desc1, setDesc1] = useState("");
 	const [picNum1, setPicNum1] = useState(0);
 	const [author1, setAuthor1] = useState("");
-	const [, setBeacon1] = useState("");
+	const [beacon1, setBeacon1] = useState("");
 	const [pic1, setPic1] = useState("");
 	const [openAdd] = React.useState(true);
 	const inputFile = useRef(null);
@@ -209,6 +213,7 @@ const Forma = ({ data, callback, refresh }) => {
 	}, [data]);
 
 	const deletePicture = async () => {
+		openLoading(true);
 		try {
 			await axios.post(
 				"https://intersoft.uno/crm/M1WebServiceCRM.svc/v1/GalleryDelete",
@@ -218,8 +223,8 @@ const Forma = ({ data, callback, refresh }) => {
 				
 			  );
 
-			handleCloseAdd();
 			handleRefresh({ ID: data.ID });
+			handleCloseAdd();
 		} catch (error) {
 			console.log(error);
 		}
@@ -248,6 +253,7 @@ const Forma = ({ data, callback, refresh }) => {
 			ID: data.ID,
 		};
 		handleRefresh(updatedData);
+		setLoading(true)
 		try {
 
 	let xif;
@@ -279,6 +285,8 @@ const Forma = ({ data, callback, refresh }) => {
     );
 
 			
+
+			setLoading(false)
 			handleCloseAdd();
 		} catch (error) {
 			console.log(error);
@@ -287,6 +295,7 @@ const Forma = ({ data, callback, refresh }) => {
 
 	return (
 		<div>
+			
 			<Modal
 				open={openAdd}
 				onClose={handleCloseAdd}
@@ -411,6 +420,7 @@ const Forma = ({ data, callback, refresh }) => {
 									desc !== desc1 ||
 									picNum !== picNum1 ||
 									author !== author1 ||
+									beacon !== beacon1 ||
 									(pic !== pic1 && pic !== "")) && (
 									<Button
 										style={{ marginTop: "10px" }}
@@ -426,7 +436,7 @@ const Forma = ({ data, callback, refresh }) => {
 									style={{ marginTop: "10px" }}
 									className="removebtn"
 									type="button"
-									onClick={deletePicture}
+									onClick={() => {deletePicture(); setLoading(true)}}
 									variant="contained"
 									color="error"
 								>
@@ -435,6 +445,7 @@ const Forma = ({ data, callback, refresh }) => {
 							</div>
 							<br />
 						</form>
+						
 					</div>
 					<div className="actions"></div>
 				</Box>

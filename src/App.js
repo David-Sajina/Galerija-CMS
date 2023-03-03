@@ -29,6 +29,7 @@ function App() {
 	const [beacon, setBeacon] = useState("");
 	const [pic, setPic] = useState("");
 	const [openAdd, setOpenAdd] = React.useState(false);
+	const [loadingState, setLoading] = useState(true);
 	const handleOpenAdd = () => setOpenAdd(true);
 	const handleCloseAdd = () => {
 		setOpenAdd(false);
@@ -46,7 +47,11 @@ function App() {
 		localStorage.clear();
 		setPic("");
 	};
+	const loading = () => {
+		setLoading(true);
+	}
 	const refreshStuff = (e) => {
+		setLoading(!loadingState);
 		if (Object.keys(e).length > 1) localUpdate(e);
 		else localDelete(e);
 	};
@@ -91,12 +96,25 @@ function App() {
 	};
 
 	const getData = async () => {
-		const podaci = await axios.get(
-			`https://intersoft.uno/crm/M1WebServiceCRM.svc/v1/GallerySelect`
-		);
+		try {
+			
+			await axios
+			.get(
+				`https://intersoft.uno/crm/M1WebServiceCRM.svc/v1/GallerySelect`
+			).then((res) => {
+				sortData(res.data.Images);
+				
+			})
+			setLoading(false)
+		} catch (error) {
+			console.log(error)
+		}
+
+
+		
+		
 
 		// Sortiranje
-		sortData(podaci.data.Images);
 	};
 	const onInputClick = () => {
 		// `current` points to the mounted file input element
@@ -132,7 +150,9 @@ function App() {
 				};
 				unsortedData = podaci.concat(newPodaci);
 				sortData(unsortedData);
+
 				notify();
+				setLoading(false)
 			} else notifyError();
 		} catch (error) {
 			console.log(error);
@@ -184,13 +204,15 @@ function App() {
 	}
 	const handleSubmit = (event) => {
 		// 👇️ prevent page refresh
+
 		event.preventDefault();
+		setLoading(true);
 		sendGallery();
 		clearVariables();
 		handleCloseAdd();
 	};
 	const notify = () => {
-		toast.success("🦄 Image submitted sucessfuly", {
+		toast.success("🦄 Submitted sucessfuly", {
 			position: "top-center",
 			autoClose: 3000,
 			hideProgressBar: false,
@@ -284,8 +306,16 @@ function App() {
 		// eslint-disable-next-line
 	}, []);
 
+	
+
 	return (
 		<div>
+			{loadingState  && (
+		<div className="loader-container">
+			<div className="spinner"></div>
+		  
+		</div>
+	)} 
 			<div className="slice">
 				<div className="alignTipka2">
 					<button onClick={() => setView(!view)} className="viewTipka">
@@ -579,17 +609,19 @@ function App() {
 					</Popup>
 				</div>
 			</div>
+			
 			<ToastContainer />
 			{view && podaci && podaci.length > 0 && (
 				<div className="backgroundOfG">
-					{" "}
-					<GalleryV podaci={podaci} prop={refreshStuff}></GalleryV>{" "}
+				{" "}
+					<GalleryV podaci={podaci} prop={refreshStuff} loadin={loading}></GalleryV>{" "}
 				</div>
 			)}
 			{!view && podaci && podaci.length > 0 && (
-				<OneRow podaci={podaci} prop={refreshStuff}></OneRow>
+				<OneRow podaci={podaci} prop={refreshStuff} loadin={loading}></OneRow>
 			)}
 		</div>
+		
 	);
 }
 

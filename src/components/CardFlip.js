@@ -3,9 +3,12 @@ import { useState } from "react";
 import "../App.css";
 import { Create } from "@mui/icons-material";
 import Forma from "./Forma";
-const CardFlip = ({ podaci, callback }) => {
+const CardFlip = ({ podaci, callback, load }) => {
 	const [isFlipped] = useState(true);
 	const [hcomponent, setHcomponent] = useState(false);
+	const loading = () => {
+		load(true)
+	}
 	const val = (e) => {
 		callback(e);
 	};
@@ -56,7 +59,7 @@ const CardFlip = ({ podaci, callback }) => {
 					&nbsp;EDIT
 				</button>
 				{hcomponent && (
-					<Forma data={podaci} callback={revalue} refresh={val}></Forma>
+					<Forma data={podaci} callback={revalue} refresh={val} loadin={loading}></Forma>
 				)}
 			</div>
 		</ReactCardFlip>

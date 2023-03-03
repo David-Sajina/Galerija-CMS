@@ -5,14 +5,17 @@ import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import "../App.css";
 
-const GalleryV = ({ podaci, prop }) => {
+const GalleryV = ({ podaci, prop, loadin }) => {
 	const [open, setOpen] = useState(false);
 	const [slika, setSlika] = useState([]);
 	const handleOpen = () => setOpen(true);
 	const handleClose = () => setOpen(false);
+	const loading = () => {
+		loadin(true);
+		handleClose();
+	}
 	const refresh = (e) => {
 		prop(e);
-		handleClose();
 	};
 	const [brojac, setBrojac] = useState(0);
 	const x = 5;
@@ -53,7 +56,7 @@ const GalleryV = ({ podaci, prop }) => {
 			>
 				<Box className="modalBody">
 					<div className="alignCardFlip">
-						<CardFlip podaci={slika} callback={refresh} />
+						<CardFlip podaci={slika} callback={refresh} load={loading} />
 					</div>
 				</Box>
 			</Modal>
